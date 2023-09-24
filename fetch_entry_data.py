@@ -74,4 +74,4 @@ def fetch_entry_data(slug: str, token: str) -> pd.DataFrame:
     entry_data = pd.DataFrame(list_of_entries, columns=['Task', 'Votes', 'Comments',
                                                     'Opened', 'Published', 'Tried',
                                                     'New'])
-    
+    return entry_data
