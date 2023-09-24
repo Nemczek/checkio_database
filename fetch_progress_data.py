@@ -71,4 +71,4 @@ def fetch_task_data(slug: str, token: str) -> pd.DataFrame:
     task_data = pd.DataFrame(list_of_tasks, columns=['Task', 'Votes', 'Comments',
                                                     'Opened', 'Published', 'Tried',
                                                     'New'])
-    
+    return task_data
