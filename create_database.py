@@ -22,7 +22,6 @@ def connect_to_database(db_name: str) -> sq.Connection:
     
     try:
         connection = sq.connect(f'{db_name}.db')
-        print('Succesfully connected')
         return connection
     
     except sq.Error as error:
@@ -30,25 +29,18 @@ def connect_to_database(db_name: str) -> sq.Connection:
 
 if __name__ == '__main__':
     token = get_slug.get_token('checkio_token.txt')
-    print('Token +')
     slug = get_slug.get_class_slug(token)
-    print('Slug +')
 
     data_tasks = fetch_data.fetch_task_data(slug, token)
-    print('Tasks fetch +')
-    print(data_tasks.head(5))
     data_entries = fetch_data.fetch_entry_data(slug, token)
-    print('Entries fetch +')
 
     engine = create_sql_engine('test_database')
-    print('Engine +')
 
     # Creating tables in database. If table already exists, it appends new records.
     data_tasks.to_sql('tasks', con=engine, index=False, if_exists='append', schema=None)
-    print('Tasks to sql +')
     data_entries.to_sql('entries', con=engine, index=False, if_exists='append', schema=None)
-    print('Entries to sql +')
 
+    # Simple testing
     connection = connect_to_database('test_database')
     cursor = connection.cursor()
 
