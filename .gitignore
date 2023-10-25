@@ -1,0 +1,13 @@
+# Databases
+*.db
+*.sql
+*.sqlite
+
+# Chache
+__pycache__/
+
+# to-do 
+*.txt
+
+# json
+*.json

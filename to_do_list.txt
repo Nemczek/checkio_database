@@ -1,3 +1,0 @@
-1) Add option to check if database exisist to skip while loop asking to provide class name (save name in file or something)
-2) Add log file 
-3) Add all solutions made by every person
