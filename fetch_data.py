@@ -68,7 +68,7 @@ def fetch_entry_data(slug: str, token: str) -> pd.DataFrame:
             list_of_entries.append([username, status, task_name, createdAt, votes, comments, url])
 
     # Convert list of lists to pandas data frame
-    entry_data = pd.DataFrame(list_of_entries, columns=['Task', 'Votes', 'Comments',
-                                                    'Opened', 'Published', 'Tried',
-                                                    'New'])
+    entry_data = pd.DataFrame(list_of_entries, columns=['Username', 'Task_status', 'Task_name',
+                                                    'Created_at', 'Votes', 'Comments',
+                                                    'Solution_url'])
     return entry_data

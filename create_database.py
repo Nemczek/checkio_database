@@ -50,6 +50,12 @@ if __name__ == '__main__':
 
     print(pd.DataFrame(rows, columns=map(lambda x: x[0], result.description)))
 
+    query2 = "SELECT * FROM entries"
+    result2 = cursor.execute(query2)
+    rows2 = result.fetchall()
+
+    print(pd.DataFrame(rows2, columns=map(lambda x2: x2[0], result2.description)))
+
     
 
 
