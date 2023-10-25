@@ -8,3 +8,6 @@ __pycache__/
 
 # to-do 
 *.txt
+
+# json
+*.json
