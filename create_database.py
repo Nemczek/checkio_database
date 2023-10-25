@@ -1,10 +1,8 @@
 import sqlalchemy as db
-from sqlalchemy_utils import database_exists, create_database
 import sqlite3 as sq
 import pandas as pd
 import fetch_data
 import get_slug
-import os
 
 def create_sql_engine(name_of_database_file: str) -> db.engine.base.Engine:
     """
@@ -27,34 +25,39 @@ def connect_to_database(db_name: str) -> sq.Connection:
     except sq.Error as error:
         print(f'Failed to connect to database {error}') # Add log entry later 
 
-if __name__ == '__main__':
-    token = get_slug.get_token('checkio_token.txt')
-    slug = get_slug.get_class_slug(token)
 
-    data_tasks = fetch_data.fetch_task_data(slug, token)
-    data_entries = fetch_data.fetch_entry_data(slug, token)
+DB_NAME = 'test_database'
+token = get_slug.get_token('checkio_token.txt')
+slug = get_slug.get_class_slug(token)
 
-    engine = create_sql_engine('test_database')
+data_tasks = fetch_data.fetch_task_data(slug, token)
+data_entries = fetch_data.fetch_entry_data(slug, token)
 
-    # Creating tables in database. If table already exists, it appends new records.
-    data_tasks.to_sql('tasks', con=engine, index=False, if_exists='append', schema=None)
-    data_entries.to_sql('entries', con=engine, index=False, if_exists='append', schema=None)
+engine = create_sql_engine(DB_NAME)
 
-    # Simple testing
-    connection = connect_to_database('test_database')
-    cursor = connection.cursor()
+# Creating tables in database. If table already exists, it appends new records.
+data_tasks.to_sql('tasks', con=engine, index=False, if_exists='append', schema=None)
+data_entries.to_sql('entries', con=engine, index=False, if_exists='append', schema=None)
 
-    query = "SELECT * FROM tasks"
-    result = cursor.execute(query)
-    rows = result.fetchall()
+# Simple testing
+connection = connect_to_database(DB_NAME)
+cursor = connection.cursor()
 
-    print(pd.DataFrame(rows, columns=map(lambda x: x[0], result.description)))
+query = "SELECT * FROM tasks"
+result = cursor.execute(query)
+rows = result.fetchall()
 
-    query2 = "SELECT * FROM entries"
-    result2 = cursor.execute(query2)
-    rows2 = result.fetchall()
+print(pd.DataFrame(rows, columns=map(lambda x: x[0], result.description)))
 
-    print(pd.DataFrame(rows2, columns=map(lambda x2: x2[0], result2.description)))
+query2 = "SELECT * FROM entries"
+result2 = cursor.execute(query2)
+rows2 = result.fetchall()
+
+print(pd.DataFrame(rows2, columns=map(lambda x2: x2[0], result2.description)))
+
+cursor.close()
+connection.close()
+
 
     
 
