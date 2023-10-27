@@ -11,7 +11,9 @@ def create_sql_engine(name_of_database_file: str) -> db.engine.base.Engine:
     Function creates our database file and returnes engine to database *.db extension is added automatically
     """
     
-    engine = db.create_engine(f'sqlite:///{name_of_database_file}.db')
+    current_path = os.getcwd()
+    save_path = current_path + r'\database'
+    engine = db.create_engine(f'sqlite:///{save_path}\\{name_of_database_file}.db')
 
     return engine
 
@@ -19,9 +21,10 @@ def connect_to_database(db_name: str) -> sq.Connection:
     """
     Function returns connetion object to our database. *.db extension is added automatically
     """
-    
+    current_path = os.getcwd()
+    save_path = current_path + r'\database'
     try:
-        connection = sq.connect(f'{db_name}.db')
+        connection = sq.connect(rf'{save_path}\{db_name}.db')
         return connection
     
     except sq.Error as error:
@@ -35,10 +38,12 @@ def write_db_name_to_json(db_name: str) -> None:
     name = {
         "name": db_name
     }
+    current_path = os.getcwd()
+    save_path = current_path + r'\database'
 
-    if not os.path.exists(f'{db_name}.json'):
+    if not os.path.exists(rf'{save_path}\{db_name}.json'):
         data = json.dumps(name, indent=4)
-        with open(f'{db_name}.json', 'w') as file:
+        with open(rf'{save_path}\{db_name}.json', 'w') as file:
             file.write(data)
     else:
         print("File alredy exists")
