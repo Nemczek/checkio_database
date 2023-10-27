@@ -6,6 +6,8 @@ import get_slug
 import json
 import os
 
+DB_NAME = 'test_database'
+
 def create_sql_engine(name_of_database_file: str) -> db.engine.base.Engine:
     """
     Function creates our database file and returnes engine to database *.db extension is added automatically
@@ -51,9 +53,14 @@ def write_db_name_to_json(db_name: str) -> None:
 
 
 if __name__ == '__main__':
-    DB_NAME = 'test_database'
+    current_path = os.getcwd()
+    save_path = current_path + r'\database'
+    if not os.path.exists(save_path):
+        os.mkdir(save_path)
+    
     write_db_name_to_json(DB_NAME)
-    token = get_slug.get_token('checkio_token.txt')
+
+    token = get_slug.get_token(r'scripts\checkio_token.txt')
     slug = get_slug.get_class_slug(token)
 
     data_tasks = fetch_data.fetch_task_data(slug, token)
