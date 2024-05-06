@@ -78,7 +78,7 @@ def extract_usernames_to_table(cursor: sq.Cursor) -> None:
     except sq.Error as error:
         print(f'Failed during execution of username extracting script: {error}')
 
-def extract_task_statuses_to_table(cursor: sq.Cursor):
+def extract_task_statuses_to_table(cursor: sq.Cursor) -> None:
     """
     Function extracts task statuses from tasks table to match snowflake design in OLTP version of database
     """
@@ -112,7 +112,7 @@ def extract_task_statuses_to_table(cursor: sq.Cursor):
         print(f'Failed during execution of statuses extracting script: {error}')
 
 if __name__ == '__main__':
-    db_name = read_database_name_from_json('test_database.json')
+    db_name = read_database_name_from_json('database/test_database.json')
     connection = connect_to_database(db_name['name'])
     cursor = connection.cursor()
 

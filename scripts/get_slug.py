@@ -22,6 +22,7 @@ def get_class_slug(token: str) -> str:
     Function returns slug parameter needed by API to retrive data about choosen class
     """
     base_with_token = BASE_URL + token
+
     all_classes_data = requests.get(base_with_token).json()['objects']
 
     # Loop for asking user to provide correct name of class
