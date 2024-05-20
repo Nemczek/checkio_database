@@ -3,6 +3,7 @@ import requests
 GROUP_PROGRESS_API_BASE = 'https://py.checkio.org/api/group-progress/'
 BASE_URL = 'https://py.checkio.org/api/group-details/'
 
+# This function no longer needed
 def get_token(path: str) -> str:
     """
     Function gets file path, and returns base API url with group token given by Pycheckio platform
