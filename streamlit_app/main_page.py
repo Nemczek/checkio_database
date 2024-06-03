@@ -7,6 +7,7 @@ import sqlite3 as sq
 import pandas as pd
 import create_database
 import os
+
 GROUP_PROGRESS_API_BASE = 'https://py.checkio.org/api/group-progress/'
 BASE_URL = 'https://py.checkio.org/api/group-details/'
 DB_NAME = 'test_database_OLTP'
@@ -70,6 +71,14 @@ if token:
         with st.expander("Expand preview"):
             st.dataframe(data_entries)
         st.download_button("Download entries data as csv file", data=csv_entries, file_name="entries_data.csv")
+
+        # Plots and statistics for choosen student
+        students = [student for student in data_entries["Username"].unique()]
+        choosen_student = st.selectbox("Choose student to get details", students, index=None)
+
+        database_subset = data_entries[data_entries["Username"] == choosen_student]
+        st.subheader("Tasks done by student")
+        st.dataframe(database_subset)
 
     except:
         pass
