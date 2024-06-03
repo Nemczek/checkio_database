@@ -53,7 +53,24 @@ if token:
 
         data_tasks.to_sql('tasks', con=engine2, index=False, if_exists='append', schema=None)
         data_entries.to_sql('entries', con=engine2, index=False, if_exists='append', schema=None)
-        st.text("Done")
+        
+        @st.cache_data
+        def convert_df(df):
+            return df.to_csv().encode("utf-8")
+        
+        csv_tasks = convert_df(data_tasks)
+        csv_entries = convert_df(data_entries)
+
+        st.subheader("Preview of tasks data")
+        with st.expander("Expand preview"):
+            st.dataframe(data_tasks)
+        st.download_button("Download tasks data as csv file", data=csv_tasks, file_name="tasks_data.csv")
+        
+        st.subheader("Preview of entries data")
+        with st.expander("Expand preview"):
+            st.dataframe(data_entries)
+        st.download_button("Download entries data as csv file", data=csv_entries, file_name="entries_data.csv")
+
     except:
         pass
 
