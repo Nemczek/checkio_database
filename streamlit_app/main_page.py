@@ -18,6 +18,7 @@ st.markdown("<center><h1>pyCheckio database app</h1></center>", unsafe_allow_htm
 
 # User checkio token
 placeholder = st.empty()
+
 token = st.text_input("Please paste your checkio token")
 
 if token:
@@ -41,20 +42,31 @@ if token:
         os.mkdir(save_path)
     
     try:
-        placeholder.text("Creating database")
-        data_entries = fetch_data.fetch_entry_data(slug, token)
-        data_tasks = fetch_data.fetch_task_data(slug, token)
+        if os.path.exists(fr"./database/task_data_{slug}.csv"):
+            data_entries = pd.read_csv(fr"./database/task_data_{slug}.csv")
+            data_tasks = pd.read_csv(fr"./database/entries_data_{slug}.csv")
+        else:
+            placeholder.text("Creating database")
+            data_entries = fetch_data.fetch_entry_data(slug, token)
+            data_tasks = fetch_data.fetch_task_data(slug, token)
 
-        engine = create_database.create_sql_engine(DB_NAME)
-        engine2 = create_database.create_sql_engine(DB_NAME2)
+            engine = create_database.create_sql_engine(f"{DB_NAME}_{slug}")
+            engine2 = create_database.create_sql_engine(f"{DB_NAME2}_{slug}")
 
-        # Creating tables in database. If table already exists, it appends new records.
-        data_tasks.to_sql('tasks', con=engine, index=False, if_exists='append', schema=None)
-        data_entries.to_sql('entries', con=engine, index=False, if_exists='append', schema=None)
+            # Creating tables in database. If table already exists, it appends new records.
+            data_tasks.to_sql('tasks', con=engine, index=False, if_exists='append', schema=None)
+            data_entries.to_sql('entries', con=engine, index=False, if_exists='append', schema=None)
 
-        data_tasks.to_sql('tasks', con=engine2, index=False, if_exists='append', schema=None)
-        data_entries.to_sql('entries', con=engine2, index=False, if_exists='append', schema=None)
-        
+            data_tasks.to_sql('tasks', con=engine2, index=False, if_exists='append', schema=None)
+            data_entries.to_sql('entries', con=engine2, index=False, if_exists='append', schema=None)
+
+            # "caching" database
+            data_tasks.to_csv(fr"./database/task_data_{slug}.csv", index=False)
+            data_entries.to_csv(fr"./database/entries_data_{slug}.csv", index=False)
+
+        if st.button("Update database"):
+            data_entries = fetch_data.fetch_entry_data(slug, token)
+            data_tasks = fetch_data.fetch_task_data(slug, token)
         @st.cache_data
         def convert_df(df):
             return df.to_csv().encode("utf-8")
@@ -80,8 +92,9 @@ if token:
         st.subheader("Tasks done by student")
         st.dataframe(database_subset)
 
-    except:
-        pass
+    # For debug change later
+    except Exception as e:
+        st.warning(e)
 
 
 
