@@ -2,7 +2,6 @@ import streamlit as st
 import requests
 import fetch_data
 import pandas as pd
-import create_database
 import os
 import numpy as np
 
@@ -48,16 +47,6 @@ if token:
             data_entries = fetch_data.fetch_entry_data(slug, token)
             data_tasks = fetch_data.fetch_task_data(slug, token)
 
-            engine = create_database.create_sql_engine(f"{DB_NAME}_{slug}")
-            engine2 = create_database.create_sql_engine(f"{DB_NAME2}_{slug}")
-
-            # Creating tables in database. If table already exists, it appends new records.
-            data_tasks.to_sql('tasks', con=engine, index=False, if_exists='append', schema=None)
-            data_entries.to_sql('entries', con=engine, index=False, if_exists='append', schema=None)
-
-            data_tasks.to_sql('tasks', con=engine2, index=False, if_exists='append', schema=None)
-            data_entries.to_sql('entries', con=engine2, index=False, if_exists='append', schema=None)
-
             # "caching" database
             data_tasks.to_csv(fr"./database/task_data_{slug}.csv", index=False)
             data_entries.to_csv(fr"./database/entries_data_{slug}.csv", index=False)
@@ -87,37 +76,38 @@ if token:
         students = [student for student in data_entries["Username"].unique()]
         choosen_student = st.selectbox("Choose student to get details", students, index=None)
 
-        database_subset = data_entries[data_entries["Username"] == choosen_student]
-        st.subheader(f"Tasks done by {choosen_student}")
-        st.dataframe(database_subset, use_container_width=True, hide_index=True)
-        
-        st.subheader(f"Details of {choosen_student}")
-        student_summary = pd.DataFrame([
-            [database_subset["Votes"].replace("None", np.NaN).sum(),
-            database_subset["Comments"].replace("None", np.NaN).sum(),
-            database_subset[database_subset["Task_status"] == "published"].shape[0],
-            database_subset[database_subset["Task_status"] == "opened"].shape[0],
-            database_subset[database_subset["Task_status"] == "tried"].shape[0]]
-        ], columns=["Received Votes", "Received Comments", "Published tasks", "Opened tasks", "Tried tasks"])
-        st.dataframe(student_summary, hide_index=True)
+        if choosen_student:
+            database_subset = data_entries[data_entries["Username"] == choosen_student]
+            st.subheader(f"Tasks done by {choosen_student}")
+            st.dataframe(database_subset, use_container_width=True, hide_index=True)
+            
+            st.subheader(f"Details of {choosen_student}")
+            student_summary = pd.DataFrame([
+                [database_subset["Votes"].replace("None", np.NaN).sum(),
+                database_subset["Comments"].replace("None", np.NaN).sum(),
+                database_subset[database_subset["Task_status"] == "published"].shape[0],
+                database_subset[database_subset["Task_status"] == "opened"].shape[0],
+                database_subset[database_subset["Task_status"] == "tried"].shape[0]]
+            ], columns=["Received Votes", "Received Comments", "Published tasks", "Opened tasks", "Tried tasks"])
+            st.dataframe(student_summary, hide_index=True)
 
-        temp_df_votes = database_subset[["Task_name", "Votes"]].replace("None", 0)
-        temp_df_comms = database_subset[["Task_name", "Comments"]].replace("None", 0)
+            temp_df_votes = database_subset[["Task_name", "Votes"]].replace("None", 0)
+            temp_df_comms = database_subset[["Task_name", "Comments"]].replace("None", 0)
 
-        temp_df_votes = temp_df_votes[temp_df_votes["Votes"] != 0]
-        temp_df_comms = temp_df_comms[temp_df_comms["Comments"] != 0]
+            temp_df_votes = temp_df_votes[temp_df_votes["Votes"] != 0]
+            temp_df_comms = temp_df_comms[temp_df_comms["Comments"] != 0]
 
-        st.subheader("Number of votes for each task")
-        st.bar_chart(temp_df_votes, x="Task_name", y="Votes")
-        
-        st.subheader("Number of comments for each task")
-        st.bar_chart(temp_df_comms, x="Task_name", y="Comments")
+            st.subheader("Number of votes for each task")
+            st.bar_chart(temp_df_votes, x="Task_name", y="Votes")
+            
+            st.subheader("Number of comments for each task")
+            st.bar_chart(temp_df_comms, x="Task_name", y="Comments")
 
-        database_subset['Created_at'] = pd.to_datetime(database_subset['Created_at'])
-        database_subset['Date'] = database_subset['Created_at'].dt.date
-        task_counts = database_subset.groupby('Date').size().reset_index(name='Task_count')
-        st.subheader("Number of tasks done")
-        st.line_chart(task_counts, x="Date", y="Task_count", )
+            database_subset['Created_at'] = pd.to_datetime(database_subset['Created_at'])
+            database_subset['Date'] = database_subset['Created_at'].dt.date
+            task_counts = database_subset.groupby('Date').size().reset_index(name='Task_count')
+            st.subheader("Number of tasks done")
+            st.line_chart(task_counts, x="Date", y="Task_count", )
     # For debug change later
     except Exception as e:
         st.warning(e)
