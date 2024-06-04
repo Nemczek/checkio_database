@@ -1,8 +1,6 @@
 import streamlit as st
 import requests
 import fetch_data
-import sqlalchemy as db
-import sqlite3 as sq
 import pandas as pd
 import create_database
 import os
