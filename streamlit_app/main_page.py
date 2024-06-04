@@ -5,11 +5,11 @@ import pandas as pd
 import os
 import numpy as np
 
-GROUP_PROGRESS_API_BASE = 'https://py.checkio.org/api/group-progress/'
-BASE_URL = 'https://py.checkio.org/api/group-details/'
-DB_NAME = 'test_database_OLTP'
-DB_NAME2 = 'test_database_OLAP'
-JSON_NAME = 'test_database'
+GROUP_PROGRESS_API_BASE = "https://py.checkio.org/api/group-progress/"
+BASE_URL = "https://py.checkio.org/api/group-details/"
+DB_NAME = "test_database_OLTP"
+DB_NAME2 = "test_database_OLAP"
+JSON_NAME = "test_database"
 
 st.markdown("<center><h1>pyCheckio database app</h1></center>", unsafe_allow_html=True)
 
@@ -20,7 +20,7 @@ token = st.text_input("Please paste your checkio token")
 
 if token:
     base_with_token = BASE_URL + token
-    all_classes_data = requests.get(base_with_token).json()['objects']
+    all_classes_data = requests.get(base_with_token).json()["objects"]
 
     classes = []
     class_slug = []
@@ -34,7 +34,7 @@ if token:
             slug = class_obj["slug"]
 
     current_path = os.getcwd()
-    save_path = current_path + r'/database'
+    save_path = current_path + r"/database"
     if not os.path.exists(save_path):
         os.mkdir(save_path)
     
@@ -103,20 +103,12 @@ if token:
             st.subheader("Number of comments for each task")
             st.bar_chart(temp_df_comms, x="Task_name", y="Comments")
 
-            database_subset['Created_at'] = pd.to_datetime(database_subset['Created_at'])
-            database_subset['Date'] = database_subset['Created_at'].dt.date
-            task_counts = database_subset.groupby('Date').size().reset_index(name='Task_count')
+            database_subset["Created_at"] = pd.to_datetime(database_subset["Created_at"])
+            database_subset["Date"] = database_subset["Created_at"].dt.date
+            task_counts = database_subset.groupby("Date").size().reset_index(name="Task_count")
+            task_counts = task_counts[task_counts["Date"] != "None"]
             st.subheader("Number of tasks done")
             st.line_chart(task_counts, x="Date", y="Task_count", )
-    # For debug change later
-    except Exception as e:
-        st.warning(e)
-
-
-
-
-
-
-
-
-
+    # To prevent yellow box from appearing
+    except:
+        pass
