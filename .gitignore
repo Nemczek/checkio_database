@@ -15,3 +15,5 @@ __pycache__/
 .metals
 database
 *.csv
+.vscode
+.ipynb
