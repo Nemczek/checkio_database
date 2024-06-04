@@ -1,12 +1,5 @@
-# CheckIO database project
+# CheckIO managment system
 
-In this project I downloaded data about progress made by my university class on https://checkio.org and exported it to SQLite database. 
-
-To create database you need to run create_database.py and rebuild_tables_oltp.py after with python from command line. To get data from checkio platform you need a special token, which is provided in checkio_token file. For now database file will be created in the same folder with source code files but this will be changed soon. In the near future I plan to add a couple of new functionalities E.g.
-
-1) Schedueling using Apache Airflow
-2) Reporting in some way (propably simple html file)
-3) I'm going to use some PySpark functionalities (I think that data is not big enough to use PySpark since calculations does not takes too long to complete, but i want some practice.)
-4) Some unit tests
+With this project I want to present you tool for managing your class on [PyCheckio](https://py.checkio.org) platform. Tool will help you track the number of tasks done by students, number of comments and votes recived from other's and even show you number of tasks done each day. Besides that you can download all available data in *.csv format. Website was made with [Streamlit](https://discuss.streamlit.io). (Here paste link for website)
 
 That's it for now. Enjoy! :smile:
