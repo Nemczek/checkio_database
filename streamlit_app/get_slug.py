@@ -3,6 +3,7 @@ import requests
 GROUP_PROGRESS_API_BASE = 'https://py.checkio.org/api/group-progress/'
 BASE_URL = 'https://py.checkio.org/api/group-details/'
 
+# This function no longer needed
 def get_token(path: str) -> str:
     """
     Function gets file path, and returns base API url with group token given by Pycheckio platform
@@ -22,6 +23,7 @@ def get_class_slug(token: str) -> str:
     Function returns slug parameter needed by API to retrive data about choosen class
     """
     base_with_token = BASE_URL + token
+
     all_classes_data = requests.get(base_with_token).json()['objects']
 
     # Loop for asking user to provide correct name of class
