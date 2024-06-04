@@ -34,7 +34,7 @@ if token:
             slug = class_obj["slug"]
 
     current_path = os.getcwd()
-    save_path = current_path + r'./database'
+    save_path = current_path + r'/database'
     if not os.path.exists(save_path):
         os.mkdir(save_path)
     
